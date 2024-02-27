@@ -1,0 +1,59 @@
+{% extends "../Base.html" %}
+{% load static %}
+<body>
+    {% block content %}
+    <style>    
+        #button2 {
+            background: linear-gradient(134deg,#5e49e6,#ff3654,#dbb0dd,#6df433);
+            background-size: 240% 240%;
+            animation: gradient-animation 5s ease infinite;
+            -webkit-background-clip: text;
+            -moz-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .gradient-background {
+            background: linear-gradient(134deg,#4D8FC3,#90ff84,#BEEBD9,#89e3ff,#6ca9ea,#80abfc);
+            background-size: 240% 240%;
+            animation: gradient-animation 5s ease infinite;
+        }
+        
+        .text-gradient {
+            background: linear-gradient(134deg,#4D8FC3,#90ff84,#BEEBD9,#89e3ff,#6ca9ea,#80abfc);
+            background-size: 240% 240%;
+            animation: gradient-animation 5s ease infinite;
+            -webkit-background-clip: text;
+            -moz-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        @keyframes gradient-animation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+    </style>
+    <div id="landing-main" class="w-full h-screen object-cover flex items-center justify-center">
+        <video loop autoplay muted plays-inline class="w-full h-auto right-0 bottom-0 absolute -z-10">
+            <!-- <source src="{% static 'Videos/landing.mp4' %}" type="video/mp4"> -->
+            <source src="{% static 'Videos/landing2.mp4' %}" type="video/mp4">
+        </video>
+        <div class="content text-center z-10">
+            <h1 class="text-9xl font-nunito bottom-52 relative text-gradient text-center">Welcome to Nimbus</h1>
+            <img class="relative bottom-44 h-16" style="left: 40rem" src="https://readme-typing-svg.herokuapp.com?font=Mukta&size=36&duration=3500&pause=747&color=FFFFFF&random=false&width=435&lines=Quick+Weather+updates...;Good+news+in+weather...;Save+weather+locations;Weather+alerts" alt="Typing SVG" />
+            <div class="flex flex-auto justify-around w-full relative top-10">
+                <a class="font-signika rounded-full p-5 text-4xl gradient-background font-nunito text-white transition-all hover:text-6xl" href="/home">Get started</a>
+                <a id="button2" class="font-signika border-4 border-dotted border-amber-950 rounded-full p-5 text-4xl text-gradient font-nunito text-white transition-all hover:text-6xl" href="/login">Go to login</a> 
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+</body>
