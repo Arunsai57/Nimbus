@@ -6,3 +6,6 @@ def index(request):
 
 def home(request):
     return render(request, 'User/Home.html')
+
+def box(request):
+    return render(request,"User/box.html")
