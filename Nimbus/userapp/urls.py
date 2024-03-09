@@ -7,6 +7,6 @@ urlpatterns = [
     path('guide', views.guide, name='guide'),
     path('map', views.map, name='map'),
     path('search', views.search, name='search'),
-      
-     
+    path('card', views.card, name='card'),
+    path('box',views.box,name="box"),
 ]
