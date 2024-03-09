@@ -1,41 +1,41 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-<div class="container">
-  <div class="row">
-    <div  align="center" class="col">
-        <br> <br>
-      <h1>Welcome to Weather Forecast</h1>
-    <form method ="post" action="">
-        {% csrf_token %}
-        <br>
-        <h4>
-            <label>Enter a City Name : </label>
-            <input type="text" name="place">
-            <br><br>
-            <button type="submit" class="btn btn-success btn-lg">Check the Current Weather</button>
-        </h4>
-    </form>
+{% extends "../Base.html" %}
+{% block content %}
+<!-- <form method="POST" acti>
+    {% csrf_token %}
+    <div class="field has-addons">
+        <div class="control is-expanded">{{ form.name }}</div>
+        <div class="control"><button type="submit" class="button is-info">Add City</button></div>
     </div>
-      <div  align="center" class="col">
-          <br> <br>
-        <h1>Weather Information</h1>
-          <br><br>
-          <h1>
-              {% if error_message %}
-              <p>{{ error_message }}</p>
-                 {% else %}
-                 <p>City: {{ city }}</p>
-                <p>Temperature: {{ temperature1 }} &#8451;</p>
-                <p>Humidity: {{ humidity }}%</p>
-                {% endif %}
-          </h1>
-      </div></div>
-</div>
+</form> -->
 
-</body>
-</html>
+
+<form class="max-w-md mx-auto" method="POST" action="{% url 'search' %}">   
+    <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+    <div class="relative">
+        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+            </svg>
+        </div>
+        <input name="city" type="search" id="default-search" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search Mockups, Logos..." required />
+        <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
+    </div>
+</form>
+
+{% for city_weather in weather_data %}
+
+<div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <a href="#">
+        <img class="rounded-t-lg" src="/docs/images/blog/image-1.jpg" alt="" />
+    </a>
+    <div class="p-5">
+        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{city_weather.city}}</h5>
+        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ city_weather.temperature }}</p>
+        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ city_weather.description }}</p>
+        
+    </div>
+</div>
+{% endfor %}
+
+
+{% endblock %}

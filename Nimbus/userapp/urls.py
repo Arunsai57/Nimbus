@@ -6,9 +6,9 @@ urlpatterns = [
     path('home', views.home, name='home'),
     path('guide', views.guide, name='guide'),
     path('map', views.map, name='map'),
-    # path('search', views.search, name='search'),
+    path('search', views.search, name='search'),
     path('box',views.box,name="box"),
-     path('guide', views.guide, name='guide'),
-    path('signup',views.signup,name="signup"),
-    path('login',views.login,name="login"),
+    path('guide', views.guide, name='guide'),
+    path('signup',views.user_signup,name="signup"),
+    path('login',views.user_login,name="login"),
 ]
