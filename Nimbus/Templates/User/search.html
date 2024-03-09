@@ -1,9 +1,13 @@
-<!DOCTYPE html>
+{% extends "Base.html" %}
+{% load static %}
+
+{% block content %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather Forecast</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}"> <!-- Adjust path to your CSS file -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -42,21 +46,6 @@
         .btn:hover {
             background-color: #45a049;
         }
-        /* Integrate navbar styles */
-        .navbar {
-            background-color: #222; /* Dark navbar */
-            padding: 10px;
-            margin-bottom: 20px;
-        }
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            padding: 10px;
-        }
-        .navbar a:hover {
-            background-color: #444; /* Darker hover color */
-            color: white;
-        }
         /* Adjust input and label styles */
         input[type="text"] {
             padding: 8px;
@@ -72,15 +61,6 @@
     </style>
 </head>
 <body>
-
-<div class="navbar">
-    <a href="#" class="logo">Weather App</a>
-    <nav class="nav-items">
-        <a href="/">Home</a>
-        <a href="/weatherinfo">Weather Info</a>
-        <a href="#">Contact</a>
-    </nav>
-</div>
 
 <div class="container">
     <div class="row">
@@ -112,3 +92,4 @@
 
 </body>
 </html>
+{% endblock %}
