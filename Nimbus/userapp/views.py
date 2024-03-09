@@ -12,3 +12,9 @@ def box(request):
   
 def guide(request):
     return render(request,'User/guide.html')
+
+def signup(request):
+    return render(request,"User/signup.html")
+
+def login(request):
+    return render(request,"User/Login.html")
