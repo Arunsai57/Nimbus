@@ -1,6 +1,30 @@
-{% extends "../Base.html" %}
+
 {% load static %}
-{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="favicon" href="{% static 'Images/Favicon/favicon.ico' %}" type="image/x-icon">
+    <link rel="apple-touch-icon" href="{% static 'Images/Favicon/favicon.ico' %}">  
+    <link rel="stylesheet" href="{% static 'CSS/tailwindfonts.css' %}">
+    <title>Nimbus</title>
+    <script src="https://cdn.tailwindcss.com"></script> <!--Taiwind-->
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+                fontFamily: {
+                    signika: ["Signika Negative", "sans-serif"],
+                    foldit: ["Foldit", "sans-serif"],
+                    martel: ["Martel", "serif"],
+                    nunito: ["Nunito", "sans-serif"],
+                },
+            }
+          }
+        }
+      </script>
+</head>
+
 <body>
     <style>    
         #button2 {
@@ -56,4 +80,4 @@
         </div>
     </div>
 </body>
-{% endblock %}
+</html>

@@ -9,3 +9,6 @@ def home(request):
 
 def box(request):
     return render(request,"User/box.html")
+  
+def guide(request):
+    return render(request,'User/guide.html')
