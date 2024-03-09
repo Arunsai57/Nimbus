@@ -11,4 +11,5 @@ urlpatterns = [
      path('guide', views.guide, name='guide'),
     path('signup',views.signup,name="signup"),
     path('login',views.login,name="login"),
+    path('search',views.search,name="search"),
 ]
