@@ -5,7 +5,10 @@ def index(request):
     return render(request, 'Non-User/Landing.html')
 
 def home(request):
-    return render(request, 'User/Home2.html')
+    return render(request, 'User/Home.html')
 
+def box(request):
+    return render(request,"User/box.html")
+  
 def guide(request):
     return render(request,'User/guide.html')
