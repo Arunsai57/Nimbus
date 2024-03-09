@@ -21,12 +21,6 @@ def box(request):
 def guide(request):
     return render(request,'User/guide.html')
 
-def signup(request):
-    return render(request,"User/signup.html")
-
-def login(request):
-    return render(request,"User/Login.html")
-
 def map(request):
     return render(request,'User/map.html')
 
@@ -43,9 +37,7 @@ def search(request):
 
             if response.status_code == 200:
                 data = response.json()
-                temperature = data['main']['temp']
-                temperature= temperature-273.15
-                temperature= '{:.1f}'.format(temperature)    
+                temperature = '{:.1f}'.format(data['main']['temp'] - 273.15)
                 humidity = data['main']['humidity']
                 description = data['weather'][0]['description']
 
@@ -58,41 +50,38 @@ def search(request):
             else:
                 error_message = 'City not found. Please try again.'
                 return render(request, 'User/search.html', {'error_message': error_message, 'weather_data': weather_data})
-            
-    for i in weather_data:
-        response = requests.get(f'http://api.openweathermap.org/data/2.5/weather?q={i.name}&appid=63407539ca53a7ee84abeced0dabbbb9')
-        if response.status_code == 200:
-                data = response.json()
-                temperature = data['main']['temp']
-                temperature= temperature-273.15
-                temperature= '{:.1f}'.format(temperature)    
-                humidity = data['main']['humidity']
-                description = data['weather'][0]['description']
 
-                city = City.objects.get(name= i.name)
-                city.temperature= temperature
-                city.humidity= humidity
-                city.description= description
-                city.save()
     return render(request, 'User/search.html', {'weather_data': weather_data})
 
+def user_signup(request):
+    if request.method == 'POST':
+        first_name= request.POST['first-name']
+        last_name= request.POST['last-name']
+        username = request.POST['username']
+        email= request.POST['email']
+        password = request.POST['password']
+        password1= request.POST['confirm-password']
 
-# def search(request):
-#     if request.method == 'POST':
-#         place = requests.POST['place']
-#         API_KEY = '63407539ca53a7ee84abeced0dabbbb9'
-#         url = f'http://api.openweathermap.org/data/2.5/weather?q={place}&appid={API_KEY}'
-#         response = request.get(url)
-#         if response.status_code == 200:
-#             data = response.json()
-#             print(data)
-#             temperature = data['main']['temp']
-#             humidity = data['main']['humidity']
-#             temperature1 = round(temperature - 273.15, 2)
-#             return render(request, 'User/search.html',
-#                           {'city': str.upper(place), 'temperature1': temperature1, 'humidity': humidity})
-#         else:
-#             error_message = 'City not found. Please try again.'
-#             return render(request, 'User/search.html', {'error_message': error_message})
-#     return render(request,"UseWr/search.html")
-    
+        if password != password1:
+            messages.error(request,"Password does not match")
+            return redirect('signup')
+
+        user= models.User.objects.create_user(first_name= first_name, last_name= last_name, username= username, email= email, password= password)
+        users= Users.objects.create(user= user)
+        users.save()
+        users.save()
+        return redirect("login")
+    return render(request, "User/signup.html")
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            auth_login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, "Invalid Credentials")
+            return redirect('login')
+    return render(request, "User/Login.html")

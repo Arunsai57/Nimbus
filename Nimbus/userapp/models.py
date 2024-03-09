@@ -16,7 +16,6 @@ class Users(models.Model):
     user= models.ForeignKey(User, on_delete=models.CASCADE)
     mobile= models.CharField(max_length=10)
     img= models.ImageField(upload_to="")
-    gender= models.CharField(max_length=10)
     
     class Meta:
         db_table= "Users"
