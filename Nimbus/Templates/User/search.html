@@ -1,41 +1,95 @@
+{% extends "Base.html" %}
+{% load static %}
+
+{% block content %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}"> <!-- Adjust path to your CSS file -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #333; /* Dark background */
+            color: #fff; /* White text */
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .row {
+            display: flex;
+            justify-content: space-around; /* Horizontal layout */
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .col {
+            width: 45%; /* Adjust the width of columns */
+            margin: 10px;
+            padding: 20px;
+            background-color: #444; /* Darker background */
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.1); /* Lighter shadow */
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        /* Adjust input and label styles */
+        input[type="text"] {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #555; /* Dark border */
+            background-color: #666; /* Dark input background */
+            color: #fff; /* White text */
+        }
+        label {
+            margin-bottom: 10px;
+            display: block;
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
-  <div class="row">
-    <div  align="center" class="col">
-        <br> <br>
-      <h1>Welcome to Weather Forecast</h1>
-    <form method ="post" action="">
-        {% csrf_token %}
-        <br>
-        <h4>
-            <label>Enter a City Name : </label>
-            <input type="text" name="place">
+    <div class="row">
+        <div align="center" class="col">
+            <h1>Welcome to Weather Forecast</h1>
+            <form method="post" action="">
+                {% csrf_token %}
+                <label>Enter a City Name : </label>
+                <input type="text" name="place">
+                <br><br>
+                <button type="submit" class="btn">Check the Current Weather</button>
+            </form>
+        </div>
+        <div align="center" class="col">
+            <h1>Weather Information</h1>
             <br><br>
-            <button type="submit" class="btn btn-success btn-lg">Check the Current Weather</button>
-        </h4>
-    </form>
-    </div>
-      <div  align="center" class="col">
-          <br> <br>
-        <h1>Weather Information</h1>
-          <br><br>
-          <h1>
-              {% if error_message %}
-              <p>{{ error_message }}</p>
-                 {% else %}
-                 <p>City: {{ city }}</p>
+            <h1>
+                {% if error_message %}
+                <p>{{ error_message }}</p>
+                {% else %}
+                <p>City: {{ city }}</p>
                 <p>Temperature: {{ temperature1 }} &#8451;</p>
                 <p>Humidity: {{ humidity }}%</p>
                 {% endif %}
-          </h1>
-      </div></div>
+            </h1>
+        </div>
+    </div>
 </div>
 
 </body>
 </html>
+{% endblock %}
