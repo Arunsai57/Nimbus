@@ -1,0 +1,26 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Free interactive weather map on your website</title>
+    <meta name="description" content="Embed the free interactive weather map on your website or blog. You can select different options to display the map." />
+    <style>
+        html,body {width:100%;height:100%;padding:0;margin:0}
+        * {position:relative; box-sizing: border-box;}
+        .nav-bar {position: fixed; top: 0; left: 0; width: 100%; background-color: #333; padding: 10px 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 100;}
+        .nav-bar a {color: #fff; text-decoration: none;}
+        .map-container {position: absolute; top: 50px; left: 0; right: 0; bottom: 0;}
+        .map {width: 100%; height: calc(100% - 50px);} /* Adjust height based on nav-bar height */
+    </style>
+</head>
+<body>
+    <div class="nav-bar">
+        <a href="/guide" class="back-button">&#8592; Back</a> <!-- Unicode for left arrow -->
+    </div>
+    <div class="map-container">
+        <iframe id="MapDesign" src="https://mapa.tutiempo.net/en/" scrolling="no" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen="true" class="map"></iframe>
+    </div>
+</body>
+</html>
