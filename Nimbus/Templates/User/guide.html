@@ -1,0 +1,60 @@
+{% extends "../Base.html" %}
+{% load static %}
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+  <h2 class="text-2xl font-semibold border-b border-gray-300 pb-2">Using Our Weather App</h2>
+  <p class="text-lg mt-2">Our Weather App provides you with up-to-date weather information for your location and other cities around the world. Here's how you can use it:</p>
+  <ul class="list-disc list-inside text-lg mt-2">
+    <li>Enter the name of the city you want to check the weather for in the search bar.</li>
+    <li>Click the "Search" button or press Enter to get the current weather conditions for that city.</li>
+    <li>You'll see details such as temperature, humidity, wind speed, and weather conditions.</li>
+    <li>Feel free to explore additional features such as forecasts and weather maps.</li>
+  </ul>
+
+  <h2 class="text-2xl font-semibold border-b border-gray-300 pb-2 mt-6">About Weather APIs</h2>
+  <p class="text-lg mt-2">Our Weather App relies on APIs (Application Programming Interfaces) to retrieve weather data from external sources. Here are some key points about the APIs we use:</p>
+  <ul class="list-disc list-inside text-lg mt-2">
+    <li>We use reputable weather data providers such as OpenWeatherMap, WeatherAPI, or AccuWeather.</li>
+    <li>These APIs offer a wide range of weather data, including current conditions, forecasts, historical data, and more.</li>
+    <li>To use these APIs, we've obtained API keys, which are unique identifiers that allow us to access the weather data.</li>
+    <li>The APIs provide data in JSON or XML format, which we then parse and display in our app.</li>
+  </ul>
+
+  <h2 class="text-2xl font-semibold border-b border-gray-300 pb-2 mt-6">Benefits of Our Weather Products</h2>
+  <p class="text-lg mt-2">We are providing highly recognisable weather products that make working with weather data fast and easy. Here are some key benefits:</p>
+  <ul class="list-disc list-inside text-lg mt-2">
+    <li>A spectrum of ready-to-use weather products including short-term and long-term forecasts, history, and observation data.</li>
+    <li>Accessible via fast, reliable APIs compatible with different kinds of enterprise systems.</li>
+    <li>Transparent pricing and licensing, suitable for most applications, up to complex enterprise systems.</li>
+    <li>All our products contain essential climate variables for any location.</li>
+    <li>We offer special products tailored for industries affected by weather conditions, such as Road Risk API, Solar Irradiance API, Solar Panel Energy Prediction, etc.</li>
+  </ul>
+
+  <p class="text-lg mt-6">Thank you for choosing our Weather App! We hope you find it helpful and informative.</p>
+</div>
+
+<style>
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #1E293B; /* Change the background color */
+    border-radius: 10px; /* Add some border-radius for styling */
+    overflow: hidden; /* Hide the overflow content */
+  }
+  h1, h2 {
+    color: #ffffff;
+  }
+  p, ul, a {
+    color: #ffffff;
+  }
+  ul {
+    margin-left: 20px;
+  }
+  .border-b {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: #D1D5DB; /* Use your desired border color */
+  }
+</style>
+{% endblock %}
