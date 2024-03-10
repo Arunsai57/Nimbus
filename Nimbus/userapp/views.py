@@ -7,6 +7,8 @@ from .models import City, Users
 from django.contrib.auth import models, authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib import messages
+from django.conf import settings
+from django.core.mail import send_mail
 
 # Create your views here.
 def index(request):
@@ -85,3 +87,19 @@ def user_login(request):
             messages.error(request, "Invalid Credentials")
             return redirect('login')
     return render(request, "User/Login.html")
+
+def feedback(request):
+    if request.method== "POST":
+        name= request.POST['name']
+        subject = request.POST['subject']
+        recipient_address= []
+        recipient_address.append(request.POST['email'])
+        message = request.POST['message'] + "Email from user: " + request.POST['email']
+        email_from = settings.EMAIL_HOST_USER
+        admin_mail= settings.EMAIL_SITE_ADMIN
+        send_mail(subject, message, email_from, [admin_mail])
+        subject= "Hello "+ name+"!"
+        message= "We are so sorry to hear that our services aren't up to your standard but we stand on a promise to strive to make a better website for you. We have recieved your email and we will use your message to better ourselves"
+        send_mail(subject, message, email_from, recipient_address)
+        return redirect('home')
+    return render(request, 'Feedback.html')

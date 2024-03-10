@@ -178,6 +178,15 @@
       color: #a1a1a1;
       padding: 10px 20px;
     }
+
+    .fas, .work-heading, .work-text, .intro, .achievements, .work, .about-me {
+      color: white !important;
+    }
+
+    .links {
+      display: flex;
+      flex-direction: column;
+    }
   </style>
 </head>
 
@@ -208,16 +217,18 @@
     </div>
     <div class="about-me">
       <div class="about-me-text">
-        <h2>About Our App</h2>
-        <p>Our weather app provides comprehensive weather information and forecasts using advanced APIs. Stay informed about weather conditions anywhere, anytime.</p>
+        <h2 class="fas">About Our App</h2>
+        <p class="fas w-fit">Our weather app provides comprehensive weather information and forecasts using advanced APIs. Stay informed about weather conditions anywhere, anytime.</p>
       </div>
       <img src="https://as2.ftcdn.net/v2/jpg/04/97/80/99/1000_F_497809944_FMo3DO6j7XSlb9rZKOlnqaaWoJhuZXBm.jpg" alt="weather">
     </div>
   </main>
   <footer class="footer">
-    <div class="copy">&copy; 2024 Weather App</div>
+    <div class="copy">&copy; 2024 Weather App <br><br>
+      <a href="feedback" style="color: darkcyan;">If you want to suggest something or if you find an issue. Click here</a>
+    </div>
     <div class="bottom-links">
-      
+
       <div class="links">
         <span>Social Links</span>
         <a href="#"><i class="fab fa-facebook"></i></a>
