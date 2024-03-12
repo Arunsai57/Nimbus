@@ -1,4 +1,5 @@
 from pyexpat.errors import messages
+from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 import requests
@@ -65,14 +66,18 @@ def user_signup(request):
         password1= request.POST['confirm-password']
 
         if password != password1:
-            messages.error(request,"Password does not match")
+            messages.error(request,"Passwords do not match!!")
             return redirect('signup')
-
-        user= models.User.objects.create_user(first_name= first_name, last_name= last_name, username= username, email= email, password= password)
-        users= Users.objects.create(user= user)
-        users.save()
-        users.save()
-        return redirect("login")
+        try:
+            user= models.User.objects.create_user(first_name= first_name, last_name= last_name, username= username, email= email, password= password)
+            users= Users.objects.create(user= user)
+            users.save()
+            users.save()
+            return redirect("login")
+        except IntegrityError as e:
+            messages.error(request, 'Username is already taken. Please choose a different one.')
+            return redirect('signup')
+        
     return render(request, "User/signup.html")
 
 def user_login(request):
@@ -84,7 +89,7 @@ def user_login(request):
             auth_login(request, user)
             return redirect('home')
         else:
-            messages.error(request, "Invalid Credentials")
+            messages.error(request, "Invalid Credentials!!")
             return redirect('login')
     return render(request, "User/Login.html")
 
