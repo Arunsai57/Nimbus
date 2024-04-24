@@ -24,15 +24,15 @@
             <input  type="password" id="id_new_password1" placeholder="Enter your Password" name="password" required><br>
           </div>
         <div class="button">
-          <input type="submit" value="Register">
+          <input type="submit" value="   Login   ">
         </div>
       </form>
       <a href="{% url 'signup' %}" style="float: right;">Need to create an account?</a>
     </div>
   </div>
   {% for message in messages %}
-  <h4{% if message.tags %} class="{{ message.tags }}"{% endif %} style="color: red;">{{ message }}</h4>
-{% endfor %}
+    <h4{% if message.tags %} class="{{ message.tags }}"{% endif %} style="color: red;">{{ message }}</h4>
+  {% endfor %}
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');

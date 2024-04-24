@@ -13,7 +13,8 @@ class City(models.Model):
         db_table = 'cities'
 
 class Users(models.Model):
-    user= models.ForeignKey(User, on_delete=models.CASCADE)
+    user= models.OneToOneField(User, on_delete=models.CASCADE)
+    cities = models.ManyToManyField(City)
     mobile= models.CharField(max_length=10)
     img= models.ImageField(upload_to="")
     
