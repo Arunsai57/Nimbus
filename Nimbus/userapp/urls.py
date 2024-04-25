@@ -13,5 +13,6 @@ urlpatterns = [
     path('login',views.user_login,name="login"),
     path('search',views.search,name="search"),
     path('feedback',views.feedback,name="feedback"),
-    path('add_city',views.addCity, name="add_city")
+    path('add_city',views.addCity, name="add_city"),
+    path('logout',views.user_logout,name="logout"),
 ]
