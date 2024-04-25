@@ -46,6 +46,10 @@
       <a href="{% url 'login' %}">Already an user?</a>  
     </div>
   </div>
+  {% for message in messages %}
+  <h4{% if message.tags %} class="{{ message.tags }}"{% endif %} style="color: red;">{{ message }}</h4>
+{% endfor %}
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 *{

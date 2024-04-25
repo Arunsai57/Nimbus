@@ -1,4 +1,5 @@
 from pyexpat.errors import messages
+from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 import requests
@@ -12,6 +13,8 @@ from django.core.mail import send_mail
 
 # Create your views here.
 def index(request):
+    if request.user.is_authenticated:
+        return render(request, 'User/Home.html')
     return render(request, 'Non-User/Landing.html')
 
 def home(request):
@@ -27,33 +30,12 @@ def map(request):
     return render(request,'User/map.html')
 
 def search(request):
-    weather_data = City.objects.all()
+    if request.user.is_authenticated:
+        user_profile = Users.objects.get(user=request.user)
+        user_cities = user_profile.cities.all()
+        return render(request, 'User/search.html', {'user_cities': user_cities})
 
-    if request.method == 'POST':
-        place = request.POST.get('city', '')
-
-        if place:
-            API_KEY = '63407539ca53a7ee84abeced0dabbbb9'
-            url = f'http://api.openweathermap.org/data/2.5/weather?q={place}&appid={API_KEY}'
-            response = requests.get(url)
-
-            if response.status_code == 200:
-                data = response.json()
-                temperature = '{:.1f}'.format(data['main']['temp'] - 273.15)
-                humidity = data['main']['humidity']
-                description = data['weather'][0]['description']
-
-                city, created = City.objects.get_or_create(
-                    name=place,
-                    defaults={'temperature': temperature, 'humidity': humidity, 'description': description}
-                )
-
-                return render(request, 'User/search.html', {'city': city, 'weather_data': weather_data})
-            else:
-                error_message = 'City not found. Please try again.'
-                return render(request, 'User/search.html', {'error_message': error_message, 'weather_data': weather_data})
-
-    return render(request, 'User/search.html', {'weather_data': weather_data})
+    return render(request, 'User/search.html')
 
 def user_signup(request):
     if request.method == 'POST':
@@ -65,14 +47,18 @@ def user_signup(request):
         password1= request.POST['confirm-password']
 
         if password != password1:
-            messages.error(request,"Password does not match")
+            messages.error(request,"Passwords do not match!!")
             return redirect('signup')
-
-        user= models.User.objects.create_user(first_name= first_name, last_name= last_name, username= username, email= email, password= password)
-        users= Users.objects.create(user= user)
-        users.save()
-        users.save()
-        return redirect("login")
+        try:
+            user= models.User.objects.create_user(first_name= first_name, last_name= last_name, username= username, email= email, password= password)
+            users= Users.objects.create(user= user)
+            users.save()
+            return redirect("login")
+        except IntegrityError as e:
+            messages.error(request, 'Username is already taken. Please choose a different one.')
+            print(e)
+            return redirect('signup')
+        
     return render(request, "User/signup.html")
 
 def user_login(request):
@@ -80,11 +66,11 @@ def user_login(request):
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
-        if user is not None:
+        if user:
             auth_login(request, user)
             return redirect('home')
         else:
-            messages.error(request, "Invalid Credentials")
+            messages.error(request, 'Invalid Credentials!!')
             return redirect('login')
     return render(request, "User/Login.html")
 
@@ -103,3 +89,69 @@ def feedback(request):
         send_mail(subject, message, email_from, recipient_address)
         return redirect('home')
     return render(request, 'Feedback.html')
+
+def addCity(request):
+    if request.user.is_authenticated:
+        current_user = Users.objects.get(user=request.user)
+        weather_data = current_user.cities.all()
+        place = request.POST.get('city', '')
+        if place:
+            API_KEY = '63407539ca53a7ee84abeced0dabbbb9'
+            url = f'http://api.openweathermap.org/data/2.5/weather?q={place}&appid={API_KEY}'
+            response = requests.get(url)
+
+            if response.status_code == 200:
+                data = response.json()
+                temperature = '{:.1f}'.format(data['main']['temp'] - 273.15)
+                humidity = data['main']['humidity']
+                description = data['weather'][0]['description']
+
+                city, created = City.objects.get_or_create(
+                    name=place,
+                    defaults={'temperature': temperature, 'humidity': humidity, 'description': description}
+                )
+
+                current_user.cities.add(city)
+
+                return render(request, 'User/search.html', {'saved_weather_data': weather_data})
+            else:
+                error_message = 'City not found. Please try again.'
+                return render(request, 'User/search.html', {'error_message': error_message, 'saved_weather_data': weather_data})
+    else:
+        place = request.POST.get('city', '')
+        API_KEY = '63407539ca53a7ee84abeced0dabbbb9'
+        url = f'http://api.openweathermap.org/data/2.5/weather?q={place}&appid={API_KEY}'
+        response = requests.get(url)
+
+        data = response.json()
+        temperature = '{:.1f}'.format(data['main']['temp'] - 273.15)
+        humidity = data['main']['humidity']
+        description = data['weather'][0]['description']
+
+        return render(request, 'User/search.html', {'weather_data':{'city': str.upper(place), 'temperature': temperature, 'humidity': humidity, 'description': description}})
+
+# def addCity(request):
+#         if request.user.is_authenticated:
+#             current_user = Users.objects.get(user=request.user)
+#             weather_data = current_user.objects.all()
+#         place = request.POST.get('city', '')
+#         if place:
+#             API_KEY = '63407539ca53a7ee84abeced0dabbbb9'
+#             url = f'http://api.openweathermap.org/data/2.5/weather?q={place}&appid={API_KEY}'
+#             response = requests.get(url)
+
+#             if response.status_code == 200:
+#                 data = response.json()
+#                 temperature = '{:.1f}'.format(data['main']['temp'] - 273.15)
+#                 humidity = data['main']['humidity']
+#                 description = data['weather'][0]['description']
+
+#                 # city = current_user.cities.get_or_create(
+#                 #     name=place,
+#                 #     defaults={'temperature': temperature, 'humidity': humidity, 'description': description}
+#                 # )
+
+#                 return render(request, 'User/search.html', {'weather_data':{'city': str.upper(place), 'temperature': temperature, 'humidity': humidity, 'description': description}},{'saved_weather_data': weather_data})
+#             else:
+#                 error_message = 'City not found. Please try again.'
+#                 return render(request, 'User/search.html', {'error_message': error_message, 'saved_weather_data': weather_data})
