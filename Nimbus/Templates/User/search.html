@@ -23,11 +23,11 @@
     </div>
 </form>
 {% if error_message %}
-    <div class="text-red-500 my-4 ">{{ error_message }}</div>
+    <div class="text-red-500 my-4 text-center ">{{ error_message }}</div>
 {% endif %}
 
 {% if saved_weather_data %}
-<main class="grid grid-cols-3 text-center p-5 items-start" style="grid-row-gap: 15%;">
+<main class="grid grid-cols-4 text-center p-5 items-start" style="grid-row-gap: 15%;">
 {% for city in saved_weather_data %}
     <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 btn" href="card">
         <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ city.name }}</h5>
@@ -37,7 +37,7 @@
 {% endfor %}
 </main>
 {%  elif weather_data %}
-<main class="grid grid-cols-3 text-center p-5 items-start" style="grid-row-gap: 15%;">
+<main class="grid grid-cols-1 text-center p-5 items-start" style="grid-row-gap: 15%;">
         <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 btn" href="card">
             <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ weather_data.city }}</h5>
             <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ weather_data.temperature }} °C</p>
@@ -51,15 +51,15 @@
 
 <style>
     .btn {
-        line-height: 1.8rem;
+        /* line-height: 1.8rem; */
 
-        padding: 0.5rem 1rem;
+        padding: 0.5rem 6rem;
         font-size: 1rem;
         position: relative;
         background-color: #18181b;
         color: #f4f4f5;
         transition: background-color 0.2s ease-in-out;
-        justify-content: center;
+        justify-self: center;
         text-align: center;
         cursor: pointer; /* Not included according to website */
     }

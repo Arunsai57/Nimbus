@@ -7,6 +7,7 @@ from .forms import CityForm
 from .models import City, Users
 from django.contrib.auth import models, authenticate
 from django.contrib.auth import login as auth_login
+from django.contrib.auth import logout as auth_logout
 from django.contrib import messages
 from django.conf import settings
 from django.core.mail import send_mail
@@ -129,6 +130,11 @@ def addCity(request):
         description = data['weather'][0]['description']
 
         return render(request, 'User/search.html', {'weather_data':{'city': str.upper(place), 'temperature': temperature, 'humidity': humidity, 'description': description}})
+    
+def user_logout(request):
+    if request.user.is_authenticated:
+        auth_logout(request) 
+    return redirect('index')
 
 # def addCity(request):
 #         if request.user.is_authenticated:
