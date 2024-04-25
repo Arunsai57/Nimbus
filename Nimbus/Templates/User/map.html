@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Free interactive weather map on your website</title>
+    <title>Nimbus</title>
     <meta name="description" content="Embed the free interactive weather map on your website or blog. You can select different options to display the map." />
     <style>
         html,body {width:100%;height:100%;padding:0;margin:0}
@@ -16,9 +16,7 @@
     </style>
 </head>
 <body>
-    <div class="nav-bar">
-        <a href="/home" class="back-button">&#8592; Back</a> <!-- Unicode for left arrow -->
-    </div>
+    <a href="{% url 'home' %}" class="back-button">&#8592; Back</a> <!-- Unicode for left arrow -->
     <div class="map-container">
         <iframe id="MapDesign" src="https://mapa.tutiempo.net/en/" scrolling="no" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen="true" class="map"></iframe>
     </div>
