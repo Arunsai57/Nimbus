@@ -45,6 +45,16 @@
         </div>
 </main>
 <h2 class="text-white text-3xl text-center p-6 bottom-0">Login for more functionality ✨</h2>
+{% elif user_cities %}
+<main class="grid grid-cols-4 text-center p-5 items-start" style="grid-row-gap: 15%;">
+    {% for city in user_cities %}
+        <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 btn" href="card">
+            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ city.name }}</h5>
+            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ city.temperature }} °C</p>
+            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ city.description }}</p>
+        </div>
+    {% endfor %}
+    </main>
 {% else %}
     <h2 class="text-white text-3xl text-center p-6">Enter a city name to begin 🔎<br> {% if not request.user.is_authenticated %} Login for more functionality 🤠 {% endif %}</h2>
 {% endif %}
