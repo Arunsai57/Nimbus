@@ -31,3 +31,4 @@ class Forecast(models.Model):
 
     def __str__(self):
         return f'{self.city_name} - {self.forecast_date} {self.forecast_time}'
+    

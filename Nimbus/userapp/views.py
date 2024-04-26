@@ -123,6 +123,8 @@ def addCity(request):
         weather_data = current_user.cities.all()
 
         place = request.POST.get('city', '')
+        if current_user.cities.filter(name=place).exists():
+            return redirect(search)
         if place:
             url = f'http://api.openweathermap.org/data/2.5/weather?q={place}&appid={API_KEY}'
             response = requests.get(url)
@@ -137,8 +139,10 @@ def addCity(request):
                     name=place,
                     defaults={'temperature': temperature, 'humidity': humidity, 'description': description}
                 )
-
+                store_5_day_forecast(place)
                 current_user.cities.add(city)
+
+                
 
                 return render(request, 'User/search.html', {'saved_weather_data': weather_data})
             else:
@@ -188,6 +192,31 @@ def get_5_day_forecast(place):
         return forecast_data
     else:
         return None
+    
+def store_5_day_forecast(place):
+    API_KEY = '63407539ca53a7ee84abeced0dabbbb9'
+    url = f'http://api.openweathermap.org/data/2.5/forecast?q={place}&appid={API_KEY}'
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        data = response.json()
+        forecast_data = {}
+        for forecast in data['list']:
+            forecast_date = forecast['dt_txt'].split()[0]
+            forecast_time = forecast['dt_txt'].split()[1]
+            temperature = '{:.1f}'.format(forecast['main']['temp'] - 273.15)
+            humidity = forecast['main']['humidity']
+            description = forecast['weather'][0]['description']
+            if forecast_date not in forecast_data:
+                forecast_data[forecast_date] = []
+            forecast_data[forecast_date].append({
+                'time': forecast_time,
+                'temperature': temperature,
+                'humidity': humidity,
+                'description': description
+            })
+        save_forecast_to_db(place ,forecast_data)
+
 
 def save_forecast_to_db(place, data):
     for forecast_date, forecasts in data.items():
@@ -213,8 +242,6 @@ def showCity(request):
             return render(request, 'User/show_city.html', {'error_message': error_message})
     else:
         return redirect('search')
-
-
 # def addCity(request):
 #         if request.user.is_authenticated:
 #             current_user = Users.objects.get(user=request.user)
