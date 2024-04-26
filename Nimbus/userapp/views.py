@@ -1,3 +1,4 @@
+import datetime
 import json
 from pyexpat.errors import messages
 from django.db import IntegrityError
@@ -5,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 import requests
 from .forms import CityForm
-from .models import City, Users
+from .models import City, Forecast, Users
 from django.contrib.auth import models, authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
@@ -122,6 +123,8 @@ def addCity(request):
         weather_data = current_user.cities.all()
 
         place = request.POST.get('city', '')
+        if current_user.cities.filter(name=place).exists():
+            return redirect(search)
         if place:
             url = f'http://api.openweathermap.org/data/2.5/weather?q={place}&appid={API_KEY}'
             response = requests.get(url)
@@ -136,8 +139,10 @@ def addCity(request):
                     name=place,
                     defaults={'temperature': temperature, 'humidity': humidity, 'description': description}
                 )
-
+                store_5_day_forecast(place)
                 current_user.cities.add(city)
+
+                
 
                 return render(request, 'User/search.html', {'saved_weather_data': weather_data})
             else:
@@ -183,23 +188,60 @@ def get_5_day_forecast(place):
                 'humidity': humidity,
                 'description': description
             })
+        save_forecast_to_db(place ,forecast_data)
         return forecast_data
     else:
         return None
+    
+def store_5_day_forecast(place):
+    API_KEY = '63407539ca53a7ee84abeced0dabbbb9'
+    url = f'http://api.openweathermap.org/data/2.5/forecast?q={place}&appid={API_KEY}'
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        data = response.json()
+        forecast_data = {}
+        for forecast in data['list']:
+            forecast_date = forecast['dt_txt'].split()[0]
+            forecast_time = forecast['dt_txt'].split()[1]
+            temperature = '{:.1f}'.format(forecast['main']['temp'] - 273.15)
+            humidity = forecast['main']['humidity']
+            description = forecast['weather'][0]['description']
+            if forecast_date not in forecast_data:
+                forecast_data[forecast_date] = []
+            forecast_data[forecast_date].append({
+                'time': forecast_time,
+                'temperature': temperature,
+                'humidity': humidity,
+                'description': description
+            })
+        save_forecast_to_db(place ,forecast_data)
+
+
+def save_forecast_to_db(place, data):
+    for forecast_date, forecasts in data.items():
+        for forecast in forecasts:
+            Forecast.objects.create(
+                city_name=place,
+                forecast_date=datetime.datetime.strptime(forecast_date, '%Y-%m-%d').date(),
+                forecast_time=datetime.datetime.strptime(forecast['time'], '%H:%M:%S').time(),
+                temperature=float(forecast['temperature']),
+                humidity=int(forecast['humidity']),
+                description=forecast['description']
+            )
+
 
 def showCity(request):
     if request.method == 'POST':
         place = request.POST.get('city_name', '')
         forecast = get_5_day_forecast(place)
         if forecast:
-            return render(request, 'User/show_city.html', {'forecast_data': forecast})
+            return render(request, 'User/show_city.html', {'forecast_data': forecast, 'city_name': place})
         else:
             error_message = 'City not found. Please try again.'
             return render(request, 'User/show_city.html', {'error_message': error_message})
     else:
-        return render(request, 'User/show_city.html')
-
-
+        return redirect('search')
 # def addCity(request):
 #         if request.user.is_authenticated:
 #             current_user = Users.objects.get(user=request.user)
