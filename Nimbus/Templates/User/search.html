@@ -36,8 +36,9 @@
     </div>
 </form>
 {% if error_message %}
-    <div class="text-red-500 my-4 text-center ">{{ error_message }}</div>
+<div class="text-red-500 my-4 text-center ">{{ error_message }}</div>
 {% endif %}
+<a href="{% url 'predict_all' %}" class="text-gray-400 text-xl text-center p-6 underline">Show AI predictions</a>
 
 {% if saved_weather_data %}
 <form action="{% url 'show_city' %}" method="post" id="myForm">
@@ -80,6 +81,7 @@
 {% else %}
     <h2 class="text-white text-3xl text-center p-6">Enter a city name to begin 🔎<br> {% if not request.user.is_authenticated %} Login for more functionality 🤠 {% endif %}</h2>
 {% endif %}
+
 
 <style>
     .btn {
