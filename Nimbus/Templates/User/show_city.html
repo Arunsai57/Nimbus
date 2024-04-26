@@ -1,14 +1,5 @@
 {% extends "../Base.html" %}
 {% block content %}
-<!-- <form method="POST" acti>
-    {% csrf_token %}
-    <div class="field has-addons">
-        <div class="control is-expanded">{{ form.name }}</div>
-        <div class="control"><button type="submit" class="button is-info">Add City</button></div>
-    </div>
-</form> -->
-
-
 <form class="max-w-md mx-auto" method="POST" action="{% url 'add_city' %}">   
     {% csrf_token %}
     <label for="city" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">City</label>
@@ -27,62 +18,26 @@
 {% endif %}
 
 {% if forecast_data %}
-    <h2>5-Day Weather Forecast</h2>
+    <h2 class="text-white">5-Day Weather Forecast</h2>
     <ul>
-        {% for data in forecast_data %}
-            <li>Date: {{ data.date }}, Temperature: {{ data.temperature }}°C, Humidity: {{ data.humidity }}%, Description: {{ data.description }}</li>
+        {% for date, data_list in forecast_data.items %}
+            <li>
+                <h3 class="text-white">{{ date }}</h3>
+                <ul>
+                    {% for data in data_list %}
+                        <li class="text-white">Time: {{ data.time }}, Temperature: {{ data.temperature }}°C, Humidity: {{ data.humidity }}%, Description: {{ data.description }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
         {% endfor %}
     </ul>
 {% endif %}
 
+
+
+
 <style>
-    .btn {
-        /* line-height: 1.8rem; */
-
-        padding: 0.5rem 6rem;
-        font-size: 1rem;
-        position: relative;
-        background-color: #18181b;
-        color: #f4f4f5;
-        transition: background-color 0.2s ease-in-out;
-        justify-self: center;
-        text-align: center;
-        cursor: pointer; /* Not included according to website */
-    }
-
-    .btn:hover {
-    background-color: #0c0c0d;
-    }
-
-    .btn:before {
-        content: "";
-        position: absolute;
-        background: linear-gradient(
-            to right,
-            rgb(0, 220, 130),
-            rgb(54, 228, 218),
-            rgb(22, 167, 158)
-        );
-        inset: -2px;
-        z-index: -1;
-        border-radius: 12.5px;
-        transition: all 0.2s ease 0s;
-    }
-
-    .btn:hover:before {
-        box-shadow: rgba(0, 220, 130, 0.5) 0px 0px 10px 0px, rgba(54, 228, 218, 0.5) 0px 0px 20px 0px;
-    }
-
-    .btn > span {
-        text-align: left;
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 1;
-        word-break: break-all;
-    }
 
 </style>
-
 
 {% endblock %}

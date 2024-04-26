@@ -168,14 +168,17 @@ def get_5_day_forecast(place):
 
     if response.status_code == 200:
         data = response.json()
-        forecast_data = []
+        forecast_data = {}
         for forecast in data['list']:
-            forecast_date = forecast['dt_txt']
+            forecast_date = forecast['dt_txt'].split()[0]
+            forecast_time = forecast['dt_txt'].split()[1]
             temperature = '{:.1f}'.format(forecast['main']['temp'] - 273.15)
             humidity = forecast['main']['humidity']
             description = forecast['weather'][0]['description']
-            forecast_data.append({
-                'date': forecast_date,
+            if forecast_date not in forecast_data:
+                forecast_data[forecast_date] = []
+            forecast_data[forecast_date].append({
+                'time': forecast_time,
                 'temperature': temperature,
                 'humidity': humidity,
                 'description': description
@@ -185,32 +188,16 @@ def get_5_day_forecast(place):
         return None
 
 def showCity(request):
-    if request.user.is_authenticated:
-        current_user = Users.objects.get(user=request.user)
-        weather_data = current_user.cities.all()
-
+    if request.method == 'POST':
         place = request.POST.get('city_name', '')
-        if place:
-            forecast = get_5_day_forecast(place)
-            if forecast:
-                for data in forecast:
-                    # Save forecast data to database or process as needed
-                    pass
-                return render(request, 'User/show_city.html', {'saved_weather_data': weather_data, 'forecast_data': forecast})
-            else:
-                error_message = 'City not found. Please try again.'
-                return render(request, 'User/show_city.html', {'error_message': error_message, 'saved_weather_data': weather_data})
-        else:
-            error_message = 'City not found. Please try again.'
-            return render(request, 'User/show_city.html', {'error_message': error_message, 'saved_weather_data': weather_data})
-    else:
-        place = request.POST.get('city', '')
         forecast = get_5_day_forecast(place)
         if forecast:
-            return render(request, 'User/show_city.html', {'weather_data': {'city': str.upper(place)}, 'forecast_data': forecast})
+            return render(request, 'User/show_city.html', {'forecast_data': forecast})
         else:
             error_message = 'City not found. Please try again.'
             return render(request, 'User/show_city.html', {'error_message': error_message})
+    else:
+        return render(request, 'User/show_city.html')
 
 
 # def addCity(request):
