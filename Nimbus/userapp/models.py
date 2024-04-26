@@ -20,3 +20,14 @@ class Users(models.Model):
     
     class Meta:
         db_table= "Users"
+
+class Forecast(models.Model):
+    city_name = models.CharField(max_length=100)
+    forecast_date = models.DateField()
+    forecast_time = models.TimeField()
+    temperature = models.FloatField()
+    humidity = models.IntegerField()
+    description = models.CharField(max_length=200)
+
+    def __str__(self):
+        return f'{self.city_name} - {self.forecast_date} {self.forecast_time}'

@@ -18,7 +18,7 @@
 {% endif %}
 
 {% if forecast_data %}
-    <h2 class="text-white">5-Day Weather Forecast</h2>
+    <h2 class="text-white">5-Day Weather Forecast for {{city_name}}</h2>
     <ul>
         {% for date, data_list in forecast_data.items %}
             <li>
@@ -32,6 +32,8 @@
         {% endfor %}
     </ul>
 {% endif %}
+
+
 
 
 

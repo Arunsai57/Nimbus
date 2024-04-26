@@ -1,3 +1,4 @@
+import datetime
 import json
 from pyexpat.errors import messages
 from django.db import IntegrityError
@@ -5,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 import requests
 from .forms import CityForm
-from .models import City, Users
+from .models import City, Forecast, Users
 from django.contrib.auth import models, authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
@@ -183,21 +184,35 @@ def get_5_day_forecast(place):
                 'humidity': humidity,
                 'description': description
             })
+        save_forecast_to_db(place ,forecast_data)
         return forecast_data
     else:
         return None
+
+def save_forecast_to_db(place, data):
+    for forecast_date, forecasts in data.items():
+        for forecast in forecasts:
+            Forecast.objects.create(
+                city_name=place,
+                forecast_date=datetime.datetime.strptime(forecast_date, '%Y-%m-%d').date(),
+                forecast_time=datetime.datetime.strptime(forecast['time'], '%H:%M:%S').time(),
+                temperature=float(forecast['temperature']),
+                humidity=int(forecast['humidity']),
+                description=forecast['description']
+            )
+
 
 def showCity(request):
     if request.method == 'POST':
         place = request.POST.get('city_name', '')
         forecast = get_5_day_forecast(place)
         if forecast:
-            return render(request, 'User/show_city.html', {'forecast_data': forecast})
+            return render(request, 'User/show_city.html', {'forecast_data': forecast, 'city_name': place})
         else:
             error_message = 'City not found. Please try again.'
             return render(request, 'User/show_city.html', {'error_message': error_message})
     else:
-        return render(request, 'User/show_city.html')
+        return redirect('search')
 
 
 # def addCity(request):
