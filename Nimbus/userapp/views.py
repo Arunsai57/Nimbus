@@ -14,13 +14,36 @@ from django.conf import settings
 from django.core.mail import send_mail
 
 # Create your views here.
-def index(request):
+def index(request):     
     if request.user.is_authenticated:
-        return render(request, 'User/Home.html')
+        return redirect('home')
     return render(request, 'Non-User/Landing.html')
 
 def home(request):
-    return render(request, 'User/Home.html')
+    API_KEY = '63407539ca53a7ee84abeced0dabbbb9'
+
+        #ip
+    ip = requests.get('https://api.ipify.org?')
+    ip_text= ip.text
+    res = requests.get('http://ip-api.com/json/'+ip_text)
+    location_data_one = res.text
+    location_data = json.loads(location_data_one)
+    place= location_data.get('city')
+
+    url = f'http://api.openweathermap.org/data/2.5/weather?q={place}&appid={API_KEY}'
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        data = response.json()
+        temperature = '{:.1f}'.format(data['main']['temp'] - 273.15)
+        humidity = data['main']['humidity']
+        description = data['weather'][0]['description']
+
+        city, created = City.objects.get_or_create(
+            name=place,
+            defaults={'temperature': temperature, 'humidity': humidity, 'description': description}
+        )
+    return render(request, 'User/Home.html', {'city': city})
 
 def box(request):
     return render(request,"User/box.html")
@@ -97,32 +120,6 @@ def addCity(request):
         API_KEY = '63407539ca53a7ee84abeced0dabbbb9'
         current_user = Users.objects.get(user=request.user)
         weather_data = current_user.cities.all()
-
-        #ip
-        ip = requests.get('https://api.ipify.org?')
-        ip_text= ip.text
-        res = requests.get('http://ip-api.com/json/'+ip_text)
-        location_data_one = res.text
-        location_data = json.loads(location_data_one)
-        print(location_data.get('city'))
-        place= location_data.get('city')
-
-        url = f'http://api.openweathermap.org/data/2.5/weather?q={place}&appid={API_KEY}'
-        response = requests.get(url)
-
-        if response.status_code == 200:
-            data = response.json()
-            temperature = '{:.1f}'.format(data['main']['temp'] - 273.15)
-            humidity = data['main']['humidity']
-            description = data['weather'][0]['description']
-
-            city, created = City.objects.get_or_create(
-                name=place,
-                defaults={'temperature': temperature, 'humidity': humidity, 'description': description}
-            )
-
-            current_user.cities.add(city)
-
 
         place = request.POST.get('city', '')
         if place:
