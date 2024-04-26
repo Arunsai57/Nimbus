@@ -13,9 +13,15 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib import messages
 from django.conf import settings
 from django.core.mail import send_mail
+import pandas as pd
+from django.db.models import Avg
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score
+
 
 # Create your views here.
-def index(request):     
+def index(request):
     if request.user.is_authenticated:
         return redirect('home')
     return render(request, 'Non-User/Landing.html')
@@ -242,6 +248,49 @@ def showCity(request):
             return render(request, 'User/show_city.html', {'error_message': error_message})
     else:
         return redirect('search')
+    
+def predict_all(request):
+    forecast_data = Forecast.objects.values('city_name').annotate(avg_temperature=Avg('temperature'))
+    df = pd.DataFrame(forecast_data)
+    print(df.head())
+    print(df.isnull().sum())
+    df.fillna(0, inplace=True)  
+    X = df[['avg_temperature']]
+    y = df['avg_temperature']
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+    score = model.score(X_test, y_test)
+    print(f"Model R^2 Score: {score:.2f}")
+    next_day_prediction = model.predict([[df['avg_temperature'].mean()]])
+    print(f"Predicted Next Day's Temperature: {next_day_prediction[0]:.2f}")
+
+    city_models = {}
+    city_predictions = {}
+    grouped_data = df.groupby('city_name')
+    for city_name, city_data in grouped_data:
+        X = city_data.index.values.reshape(-1, 1)
+        y = city_data['avg_temperature']
+
+        model = LinearRegression()
+        model.fit(X, y)
+
+        next_day_index = city_data.index.max() + 1
+        next_day_prediction = model.predict([[next_day_index]])
+
+        city_models[city_name] = model
+        city_predictions[city_name] = next_day_prediction[0]
+
+        y_pred = model.predict(X)
+        r2 = r2_score(y, y_pred)
+        print(f"Model R^2 Score for {city_name}: {r2:.2f}")
+
+    for city_name, prediction in city_predictions.items():
+        print(f"Predicted Next Day's Temperature for {city_name}: {prediction:.2f}")
+    return render(request, 'User/predictor.html', {'predictions': city_predictions})
+
+
+
 # def addCity(request):
 #         if request.user.is_authenticated:
 #             current_user = Users.objects.get(user=request.user)
