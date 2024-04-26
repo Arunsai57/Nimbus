@@ -161,6 +161,45 @@ def user_logout(request):
         auth_logout(request) 
     return redirect('index')
 
+def get_5_day_forecast(place):
+    API_KEY = '63407539ca53a7ee84abeced0dabbbb9'
+    url = f'http://api.openweathermap.org/data/2.5/forecast?q={place}&appid={API_KEY}'
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        data = response.json()
+        forecast_data = {}
+        for forecast in data['list']:
+            forecast_date = forecast['dt_txt'].split()[0]
+            forecast_time = forecast['dt_txt'].split()[1]
+            temperature = '{:.1f}'.format(forecast['main']['temp'] - 273.15)
+            humidity = forecast['main']['humidity']
+            description = forecast['weather'][0]['description']
+            if forecast_date not in forecast_data:
+                forecast_data[forecast_date] = []
+            forecast_data[forecast_date].append({
+                'time': forecast_time,
+                'temperature': temperature,
+                'humidity': humidity,
+                'description': description
+            })
+        return forecast_data
+    else:
+        return None
+
+def showCity(request):
+    if request.method == 'POST':
+        place = request.POST.get('city_name', '')
+        forecast = get_5_day_forecast(place)
+        if forecast:
+            return render(request, 'User/show_city.html', {'forecast_data': forecast})
+        else:
+            error_message = 'City not found. Please try again.'
+            return render(request, 'User/show_city.html', {'error_message': error_message})
+    else:
+        return render(request, 'User/show_city.html')
+
+
 # def addCity(request):
 #         if request.user.is_authenticated:
 #             current_user = Users.objects.get(user=request.user)
