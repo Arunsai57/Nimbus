@@ -14,21 +14,23 @@
     </div>
 </form>
 {% if error_message %}
-    <div class="text-red-500 my-4 text-center ">{{ error_message }}</div>
+    <div class="text-red-500 my-4 text-center">{{ error_message }}</div>
 {% endif %}
 
 {% if forecast_data %}
-    <h2 class="text-white">5-Day Weather Forecast for {{city_name}}</h2>
+    <h2 class="text-white text-center text-3xl">5-Day Weather Forecast for {{city_name}}</h2>
     <ul>
         {% for date, data_list in forecast_data.items %}
+        <div class="mb-10">
             <li>
-                <h3 class="text-white">{{ date }}</h3>
+                <h3 class="text-white text-xl text-center underline">{{ date }}</h3>
                 <ul>
                     {% for data in data_list %}
-                        <li class="text-white">Time: {{ data.time }}, Temperature: {{ data.temperature }}°C, Humidity: {{ data.humidity }}%, Description: {{ data.description }}</li>
+                        <li class="text-white text-center">{{ data.time }} Temperature: {{ data.temperature }}°C Humidity: {{ data.humidity }}% {{ data.description }}</li>
                     {% endfor %}
                 </ul>
             </li>
+        </div>
         {% endfor %}
     </ul>
 {% endif %}
