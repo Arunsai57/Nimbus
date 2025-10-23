@@ -12,4 +12,9 @@ urlpatterns = [
     path('signup',views.user_signup,name="signup"),
     path('login',views.user_login,name="login"),
     path('search',views.search,name="search"),
+    path('feedback',views.feedback,name="feedback"),
+    path('add_city',views.addCity, name="add_city"),
+    path('logout',views.user_logout,name="logout"),
+    path('show_city',views.showCity,name="show_city"),
+    path('predict_all',views.predict_all,name="predict_all"),
 ]

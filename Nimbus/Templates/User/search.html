@@ -7,9 +7,22 @@
         <div class="control"><button type="submit" class="button is-info">Add City</button></div>
     </div>
 </form> -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var radios = document.querySelectorAll('input[type="radio"]');
+        for (var i = 0; i < radios.length; i++) {
+            radios[i].addEventListener('change', function() {
+                document.getElementById("myForm").submit();
+            });
+        }
+    });
 
+    function selectInput(inputId) {
+        document.getElementById(inputId).click();
+    }
+</script>
 
-<form class="max-w-md mx-auto" method="POST" action="{% url 'search' %}">   
+<form class="max-w-md mx-auto" method="POST" action="{% url 'add_city' %}">   
     {% csrf_token %}
     <label for="city" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">City</label>
     <div class="relative">
@@ -23,31 +36,64 @@
     </div>
 </form>
 {% if error_message %}
-    <div class="text-red-500 my-4 ">{{ error_message }}</div>
+<div class="text-red-500 my-4 text-center ">{{ error_message }}</div>
 {% endif %}
+<a href="{% url 'predict_all' %}" class="text-gray-400 text-xl text-center p-6 underline">Show AI predictions</a>
 
-
-<main class="grid grid-cols-3 text-center p-5 items-start" style="grid-row-gap: 15%;">
-{% for city in weather_data %}
-    <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 btn" href="card/>
+{% if saved_weather_data %}
+<form action="{% url 'show_city' %}" method="post" id="myForm">
+    {% csrf_token %}
+<main class="grid grid-cols-4 text-center p-5 items-start" style="grid-row-gap: 15%;">
+{% for city in saved_weather_data %}
+    
+    <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 btn" href="card" onclick="selectInput('{{city.name}}')">
         <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ city.name }}</h5>
         <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ city.temperature }} °C</p>
         <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ city.description }}</p>
+        <input id="{{city.name}}" class="clickme" type="radio" name="city_name" value="{{city.name}}">
     </div>
 {% endfor %}
 </main>
+</form>
+{%  elif weather_data %}
+<main class="grid grid-cols-1 text-center p-5 items-start" style="grid-row-gap: 15%;">
+        <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 btn" href="card" >
+            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ weather_data.city }}</h5>
+            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ weather_data.temperature }} °C</p>
+            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ weather_data.description }}</p>
+        </div>
+</main>
+<h2 class="text-white text-3xl text-center p-6 bottom-0">Login for more functionality ✨</h2>
+{% elif user_cities %}
+<form action="{% url 'show_city' %}" method="post" id="myForm">
+<main class="grid grid-cols-4 text-center p-5 items-start" style="grid-row-gap: 15%;">
+        {% csrf_token %}
+    {% for city in user_cities %}
+        <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 btn" href="card" onclick="selectInput('{{city.name}}')">
+            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ city.name }}</h5>
+            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ city.temperature }} °C</p>
+            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ city.description }}</p>
+            <input id="{{city.name}}" class="clickme" type="radio" name="city_name" value="{{city.name}}">
+        </div>
+    {% endfor %}
+    </main>
+    <form action="{% url 'show_city' %}" method="post" id="myForm">
+{% else %}
+    <h2 class="text-white text-3xl text-center p-6">Enter a city name to begin 🔎<br> {% if not request.user.is_authenticated %} Login for more functionality 🤠 {% endif %}</h2>
+{% endif %}
+
 
 <style>
     .btn {
-        line-height: 1.8rem;
-        border-radius: 9.5px;
-        padding: 0.5rem 1rem;
+        /* line-height: 1.8rem; */
+
+        padding: 0.5rem 6rem;
         font-size: 1rem;
         position: relative;
         background-color: #18181b;
         color: #f4f4f5;
         transition: background-color 0.2s ease-in-out;
-        justify-content: center;
+        justify-self: center;
         text-align: center;
         cursor: pointer; /* Not included according to website */
     }
@@ -82,6 +128,15 @@
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 1;
         word-break: break-all;
+    }
+
+    .clickme {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        border: none;
+        outline: none;
+        background: none;
     }
 
 </style>
